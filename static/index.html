@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Virtual Ptz Cam From Panoramic Image</title>
+    <style>
+      body {
+        background: #6666666c;
+      }
+      .content {
+        display: flex;
+        flex-direction: row;
+      }
+      .videoArea {
+        min-width: 80%;
+      }
+      video {
+        min-width: 70%;
+      }
+      nav {
+        width: 220px;
+        height: 220px;
+        background: #191919;
+        border-radius: 50%;
+        padding: 10px;
+        -webkit-transform: rotate(45deg);
+        -moz-transform: rotate(45deg);
+        transform: rotate(45deg);
+        box-shadow: inset -10px 0 12px -6px #111111,
+          inset 12px 0 5px -6px #222222, inset 0 0 0 10px #222222,
+          inset 2px 0 4px 10px rgba(0, 0, 0, 0.4), 1px 0 4px rgba(0, 0, 0, 0.8);
+        box-sizing: border-box;
+        position: relative;
+        margin: 5px auto;
+      }
+
+      #a,
+      #b,
+      #c,
+      #d,
+      #e {
+        position: absolute;
+        transform: translateY(-50%);
+        transform: translateX(-10%);
+        color: #999;
+        z-index: 99999;
+      }
+
+      #a {
+        top: 33%;
+        left: 39%;
+      }
+
+      #b {
+        top: 10%;
+        left: 22%;
+      }
+
+      #c {
+        top: 10%;
+        left: 70%;
+      }
+
+      #d {
+        top: 54%;
+        left: 68%;
+      }
+
+      #e {
+        top: 56%;
+        left: 23%;
+      }
+
+      a {
+        text-decoration: none;
+      }
+
+      .center-button {
+        display: block;
+        height: 38%;
+        width: 38%;
+        position: absolute;
+        top: 31%;
+        left: 31%;
+        background: #212121;
+        border-radius: 50%;
+        box-shadow: 1px 0 4px rgba(0, 0, 0, 0.8);
+      }
+
+      .button {
+        display: block;
+        width: 46%;
+        height: 46%;
+        margin: 2%;
+        position: relative;
+        float: left;
+        box-shadow: 1px 0px 3px 1px rgba(0, 0, 0, 0.4), inset 0 0 0 1px #000;
+      }
+
+      .button::after {
+        content: "";
+        display: block;
+        width: 50%;
+        height: 50%;
+        background: #191919;
+        position: absolute;
+        border-radius: inherit;
+      }
+
+      .button.top {
+        border-radius: 100% 0 0 0;
+        background: -webkit-radial-gradient(
+          bottom right,
+          ellipse cover,
+          #212121 35%,
+          #292929 75%
+        );
+        background: radial-gradient(
+          ellipse cover at bottom right,
+          #212121 35%,
+          #292929 75%
+        );
+      }
+
+      .button.top::after {
+        bottom: 0;
+        right: 0;
+      }
+
+      .button.right {
+        border-radius: 0 100% 0 0;
+        background: -webkit-radial-gradient(
+          bottom left,
+          ellipse cover,
+          #212121 35%,
+          #292929 75%
+        );
+      }
+
+      .button.right::after {
+        bottom: 0;
+        left: 0;
+        box-shadow: inset -2px 3px 2px -2px rgba(0, 0, 0, 0.4),
+          -10px 10px 0 10px #191919;
+        -webkit-transform: skew(3deg, 3deg) scale(0.96);
+        -moz-transform: skew(3deg, 3deg) scale(0.96);
+        transform: skew(3deg, 3deg) scale(0.96);
+      }
+
+      .button.left {
+        border-radius: 0 0 0 100%;
+        background: -webkit-radial-gradient(
+          top right,
+          ellipse cover,
+          #212121 35%,
+          #292929 75%
+        );
+        background: radial-gradient(
+          ellipse cover at top right,
+          #212121 35%,
+          #292929 75%
+        );
+      }
+
+      .button.left::after {
+        top: 0;
+        right: 0;
+        box-shadow: inset 2px -1px 2px 0 rgba(0, 0, 0, 0.4),
+          10px -10px 0 10px #191919;
+        -webkit-transform: skew(3deg, 3deg) scale(0.96);
+        -moz-transform: skew(3deg, 3deg) scale(0.96);
+        transform: skew(3deg, 3deg) scale(0.96);
+      }
+
+      .button.bottom {
+        border-radius: 0 0 100% 0;
+        background: -webkit-radial-gradient(
+          top left,
+          ellipse cover,
+          #212121 35%,
+          #292929 75%
+        );
+        background: radial-gradient(
+          ellipse cover at top left,
+          #212121 35%,
+          #292929 75%
+        );
+      }
+
+      .button.bottom::after {
+        top: 0;
+        left: 0;
+        box-shadow: inset -2px -3px 2px -2px rgba(0, 0, 0, 0.4),
+          -10px -10px 0 10px #191919;
+        -webkit-transform: skew(-3deg, -3deg) scale(0.96);
+        -moz-transform: skew(-3deg, -3deg) scale(0.96);
+        transform: skew(-3deg, -3deg) scale(0.96);
+      }
+
+      i {
+        -webkit-transform: rotate(-45deg);
+        -moz-transform: rotate(-45deg);
+        transform: rotate(-45deg);
+        position: absolute;
+        font-size: 32px;
+        top: 36%;
+        left: 39%;
+
+        color: rgba(249, 249, 249, 0.95);
+      }
+
+      .top i {
+        top: 28%;
+        left: 35%;
+      }
+
+      .left i {
+        top: 31%;
+        left: 28%;
+      }
+
+      .right i {
+        top: 28%;
+        left: 31%;
+      }
+
+      .bottom i {
+        top: 34%;
+        left: 35%;
+      }
+    </style>
+    <script
+      src="https://kit.fontawesome.com/e27126fecb.js"
+      crossorigin="anonymous"
+    ></script>
+  </head>
+  <body>
+    <div class="content">
+      <div class="videoArea">
+        <select id="cameraSelect"></select>
+        <br />
+        <video id="webcam" autoplay></video>
+      </div>
+      <div class="navigation">
+        <nav>
+          <a class="button top" href="#" id="moveup"
+            ><i class="fa-solid fa-circle-chevron-up"></i
+          ></a>
+          <a class="button right" href="#" id="moveright"
+            ><i class="fa-solid fa-circle-chevron-right"></i
+          ></a>
+          <a class="button left" href="#" id="moveleft"
+            ><i class="fa-solid fa-circle-chevron-left"></i
+          ></a>
+          <a class="button bottom" href="#" id="movedown"
+            ><i class="fa-solid fa-circle-chevron-down"></i
+          ></a>
+          <a class="center-button" href="#"></a>
+        </nav>
+        <input
+          type="range"
+          id="volume"
+          name="volume"
+          min="0.5"
+          max="3"
+          step="0.1"
+        />
+        <label for="volume">Zoom</label>
+        <label id="zoomLevel">1</label>
+      </div>
+    </div>
+
+    <a href="https://github.com/ahgsql/panorama-virtual-cam-ptz">Github</a>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+      integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <script>
+      const cameraSelect = document.getElementById("cameraSelect");
+      const webcamElement = document.getElementById("webcam");
+
+      // Function to populate the camera select dropdown
+      function populateCameraList() {
+        navigator.mediaDevices.enumerateDevices().then(function (devices) {
+          devices.forEach(function (device) {
+            if (device.kind === "videoinput") {
+              const option = document.createElement("option");
+              option.value = device.deviceId;
+              option.text = device.label || `Camera ${cameraSelect.length + 1}`;
+              cameraSelect.appendChild(option);
+            }
+          });
+        });
+      }
+
+      // Function to start the selected camera stream
+      function startCamera(id = "") {
+        let selectedCameraId = id;
+        if (id == "") selectedCameraId = cameraSelect.value;
+
+        const constraints = { video: { deviceId: selectedCameraId } };
+
+        navigator.mediaDevices
+          .getUserMedia(constraints)
+          .then(function (stream) {
+            webcamElement.srcObject = stream;
+
+            // Save the selected camera in localStorage
+            localStorage.setItem("selectedCamera", selectedCameraId);
+          })
+          .catch(function (error) {
+            console.error("Error accessing the camera:", error);
+          });
+      }
+
+      // Populate the camera list on page load
+      populateCameraList();
+
+      // Add an event listener to the select box to start the camera when the selection changes
+      cameraSelect.addEventListener("change", (e) =>
+        startCamera(e.target.value)
+      );
+
+      // Use the selected camera from localStorage if available, otherwise start the default camera
+      const selectedCameraId = localStorage.getItem("selectedCamera");
+      if (selectedCameraId) {
+        startCamera(selectedCameraId);
+        const changeEvent = new Event("change", {
+          bubbles: true, // Allow event to bubble up the DOM tree (optional)
+          cancelable: true, // Allow event to be canceled (optional)
+        });
+        // Dispatch the 'change' event on the <select> element
+        cameraSelect.value = selectedCameraId;
+      } else {
+        startCamera(); // Start the default camera if no selection in localStorage
+      }
+
+      $("#moveup").click(() => {
+        sendCameraEvent("move-y", 3);
+      });
+      $("#movedown").click(() => {
+        sendCameraEvent("move-y", -3);
+      });
+      $("#moveright").click(() => {
+        sendCameraEvent("move-x", 3);
+      });
+      $("#moveleft").click(() => {
+        sendCameraEvent("move-y", -3);
+      });
+      $("[type=range]").change(function () {
+        var newval = $(this).val();
+        sendCameraEvent("zoom", newval);
+        $("#zoomLevel").text(newval);
+      });
+      const sendCameraEvent = (e, a) => {
+        fetch("/" + e + "/" + a);
+      };
+    </script>
+  </body>
+</html>
