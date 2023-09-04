@@ -37,6 +37,7 @@ I need this kind of virtual camera for my fire-dedection system.
 - **Zoom Control ("/zoom/zoomAmount")**:
   - Description: Changes the zoom level of the virtual camera.
   - Usage: Access this route with a specified zoom amount to control the camera's zoom.
+  - 
     http://127.0.0.1:5000/zoom/1.3
 
 ## PTZ (Pan-Tilt-Zoom) Feature
