@@ -25,12 +25,15 @@ I need this kind of virtual camera for my fire-dedection system.
 
   - Description: Adjusts the horizontal angle of the virtual camera.
   - Usage: Access this route with a specified angle to move the camera horizontally.
+  - 
     http://127.0.0.1:5000/move-x/4
 
 - **Vertical Camera Movement ("/move-y/angle")**:
   - Description: Adjusts the vertical angle of the virtual camera.
   - Usage: Access this route with a specified angle to move the camera vertically.
+  - 
     http://127.0.0.1:5000/move-y/-2
+    
 - **Zoom Control ("/zoom/zoomAmount")**:
   - Description: Changes the zoom level of the virtual camera.
   - Usage: Access this route with a specified zoom amount to control the camera's zoom.
